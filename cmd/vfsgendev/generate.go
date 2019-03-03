@@ -6,11 +6,12 @@ import (
 )
 
 type data struct {
-	ImportPath      string
-	PackageName     string
-	BuildTags       string
-	VariableName    string
-	VariableComment string
+	ImportPath       string
+	PackageName      string
+	BuildTags        string
+	VariableName     string
+	VariableComment  string
+	DontWriteModTime bool
 }
 
 var generateTemplate = template.Must(template.New("").Funcs(template.FuncMap{
@@ -27,10 +28,11 @@ import (
 
 func main() {
 	err := vfsgen.Generate(sourcepkg.{{.VariableName}}, vfsgen.Options{
-		PackageName:     {{.PackageName | quote}},
-		BuildTags:       {{.BuildTags | quote}},
-		VariableName:    {{.VariableName | quote}},
-		VariableComment: {{.VariableComment | quote}},
+		PackageName:      {{.PackageName | quote}},
+		BuildTags:        {{.BuildTags | quote}},
+		VariableName:     {{.VariableName | quote}},
+		VariableComment:  {{.VariableComment | quote}},
+		DontWriteModTime: {{.DontWriteModTime}},
 	})
 	if err != nil {
 		log.Fatalln(err)
