@@ -15,9 +15,10 @@ import (
 )
 
 var (
-	sourceFlag = flag.String("source", "", "Specifies the http.FileSystem variable to use as source.")
-	tagFlag    = flag.String("tag", "dev", "Specifies a single build tag to use for source. The output will include a negated version.")
-	nFlag      = flag.Bool("n", false, "Print the generated source but do not run it.")
+	dontWriteModTime = flag.Bool("nomodtime", false, "whether or not to write a file/directory's modTime to the virtual filesystem")
+	sourceFlag       = flag.String("source", "", "Specifies the http.FileSystem variable to use as source.")
+	tagFlag          = flag.String("tag", "dev", "Specifies a single build tag to use for source. The output will include a negated version.")
+	nFlag            = flag.Bool("n", false, "Print the generated source but do not run it.")
 )
 
 func usage() {
@@ -63,11 +64,12 @@ func run(importPath, variableName, tag string) error {
 
 	var buf bytes.Buffer
 	err = generateTemplate.Execute(&buf, data{
-		ImportPath:      importPath,
-		PackageName:     packageName,
-		BuildTags:       "!" + tag,
-		VariableName:    variableName,
-		VariableComment: variableComment,
+		ImportPath:       importPath,
+		PackageName:      packageName,
+		BuildTags:        "!" + tag,
+		VariableName:     variableName,
+		VariableComment:  variableComment,
+		DontWriteModTime: *dontWriteModTime,
 	})
 	if err != nil {
 		return err
